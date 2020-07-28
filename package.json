@@ -1,0 +1,13 @@
+{
+  "name": "learn-sheet-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "google-spreadsheet": "^3.0.11",
+    "jest": "^26.1.0"
+  },
+  "scripts": {
+    "test": "jest test"
+  }
+}
