@@ -1,4 +1,4 @@
-const PROVINCE = require('../types/province');
+const { PROVINCE } = require('../types/province');
 
 const compareLocation = (
   _this = { kp: 0, add: 0 },
@@ -49,8 +49,19 @@ const getProvince = (location = { kp: 0, add: 0 }) => {
   }
 };
 
+const sanitizeRawMeters = (meter = 0) => {
+  const roundedMeter = Math.round(meter);
+  const kp = Math.round(roundedMeter / 1000);
+  const add = roundedMeter % 1000;
+  return {
+    kp,
+    add,
+  };
+};
+
 module.exports = {
   PROVINCE,
   compareLocation,
   getProvince,
+  sanitizeRawMeters,
 };
