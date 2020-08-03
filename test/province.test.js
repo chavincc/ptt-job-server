@@ -1,4 +1,5 @@
-const { compareLocation, getProvince, PROVINCE } = require('../utils/province');
+const { compareLocation, getProvince } = require('../utils/province');
+const { PROVINCE } = require('../types/province');
 
 describe('province location comparison', () => {
   it('kp higher, add higher', () => {
