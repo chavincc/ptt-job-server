@@ -1,8 +1,4 @@
-const COMPUTED_PROGRESS_STATE = {
-  NON_ACTIVE: 'NON ACTIVE',
-  IN_PROGRESS: 'IN_PROGRESS',
-  DONE: 'DONE',
-};
+const { COMPUTED_PROGRESS_STATE } = require('../types/progress');
 
 // what to output if found (0 or null) on following state
 const PROGRESS_STATE = {

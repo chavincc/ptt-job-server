@@ -1,0 +1,9 @@
+const COMPUTED_PROGRESS_STATE = {
+  NON_ACTIVE: 'NON_ACTIVE',
+  IN_PROGRESS: 'IN_PROGRESS',
+  DONE: 'DONE',
+};
+
+module.exports = {
+  COMPUTED_PROGRESS_STATE,
+};
