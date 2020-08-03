@@ -1,6 +1,7 @@
 const { GoogleSpreadsheet } = require('google-spreadsheet');
 
-const creds = require('./client_secret');
+const creds = require('./config/client_secret');
+const database = require('./database');
 const { computeProgress } = require('./utils/progress');
 const { convertA1ToCoord, convertCoordToA1 } = require('./utils/cell');
 
