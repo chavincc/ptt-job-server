@@ -32,17 +32,17 @@ describe('cell position', () => {
     },
     {
       input: {
-        row: 27,
+        row: 10,
         col: 27,
       },
-      output: 'AB28',
+      output: 'AB11',
     },
     {
       input: {
-        row: 753,
+        row: 10,
         col: 753,
       },
-      output: 'ABZ754',
+      output: 'ABZ11',
     },
   ];
 
