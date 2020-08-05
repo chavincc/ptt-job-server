@@ -49,22 +49,7 @@ const storeProgress = (progressResult) => {
   return;
 };
 
-const accessSpreadsheet = async () => {
-  console.log('spreadsheet job');
-  await doc.useServiceAccountAuth({
-    client_email: creds.client_email,
-    private_key: creds.private_key,
-  });
-
-  await doc.loadInfo();
-  console.log(doc.title);
-  const sheet = await doc.sheetsByIndex[1]; // or use doc.sheetsById[id]
-  console.log(sheet.title);
-
-  const FIRST_CELL_COORD = convertA1ToCoord(FIRST_CELL);
-  const FIRST_ROW = FIRST_CELL_COORD.row;
-  const FIRST_COL = FIRST_CELL_COORD.col;
-
+const createProgressResult = () => {
   const progressResult = {};
   Object.values(PROVINCE).forEach((province) => {
     progressResult[province] = {};
@@ -75,6 +60,23 @@ const accessSpreadsheet = async () => {
       });
     });
   });
+  return progressResult;
+};
+
+const accessSpreadsheet = async () => {
+  await doc.useServiceAccountAuth({
+    client_email: creds.client_email,
+    private_key: creds.private_key,
+  });
+
+  await doc.loadInfo();
+  const sheet = await doc.sheetsByIndex[1]; // or use doc.sheetsById[id]
+
+  const FIRST_CELL_COORD = convertA1ToCoord(FIRST_CELL);
+  const FIRST_ROW = FIRST_CELL_COORD.row;
+  const FIRST_COL = FIRST_CELL_COORD.col;
+
+  const progressResult = createProgressResult();
 
   const pipeCount = 5;
   for (let i = 0; i < pipeCount; i++) {
