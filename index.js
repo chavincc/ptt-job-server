@@ -63,7 +63,7 @@ const createProgressResult = () => {
   return progressResult;
 };
 
-const accessSpreadsheet = async () => {
+const computeSpreadsheetProgress = async () => {
   await doc.useServiceAccountAuth({
     client_email: creds.client_email,
     private_key: creds.private_key,
@@ -133,7 +133,7 @@ const accessSpreadsheet = async () => {
 cron.schedule(
   '30 12,18 * * *',
   () => {
-    accessSpreadsheet();
+    computeSpreadsheetProgress();
   },
   {
     scheduled: true,
