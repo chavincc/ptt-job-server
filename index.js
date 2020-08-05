@@ -40,7 +40,6 @@ const storeProgress = (progressResult) => {
           inProgressCount,
           doneCount,
         });
-        console.log(province, method);
       } catch (error) {
         console.error.bind(console, error);
       }
@@ -124,7 +123,6 @@ const computeSpreadsheetProgress = async () => {
       progressResult[province][method][progress]++;
     }
   }
-  console.log(progressResult);
 
   storeProgress(progressResult);
   return;
