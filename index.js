@@ -6,6 +6,11 @@ const { getProvince, sanitizeRawMeters } = require('./utils/province');
 const { convertA1ToCoord, convertCoordToA1 } = require('./utils/cell');
 const { getCellColor, getColorMethod } = require('./utils/method');
 
+const { PROVINCE } = require('./types/province');
+const { COMPUTED_PROGRESS_STATE } = require('./types/progress');
+const { CONSTRUCTION_METHOD } = require('./types/method');
+const progress = require('./types/progress');
+
 const doc = new GoogleSpreadsheet(
   '1locTXx46eaGwOCd1V8xRI84jbaoVUr4YQFnHy6C0ylk'
 );
@@ -28,6 +33,18 @@ const accessSpreadsheet = async () => {
   const FIRST_CELL_COORD = convertA1ToCoord(FIRST_CELL);
   const FIRST_ROW = FIRST_CELL_COORD.row;
   const FIRST_COL = FIRST_CELL_COORD.col;
+
+  const progressResult = {};
+  Object.values(PROVINCE).forEach((province) => {
+    progressResult[province] = {};
+    Object.values(CONSTRUCTION_METHOD).forEach((method) => {
+      progressResult[province][method] = {};
+      Object.values(COMPUTED_PROGRESS_STATE).forEach((state) => {
+        progressResult[province][method][state] = 0;
+      });
+    });
+  });
+
   for (let i = 0; i < 195; i++) {
     console.log(
       `${convertCoordToA1({
@@ -57,12 +74,11 @@ const accessSpreadsheet = async () => {
       const { kp, add } = sanitizeRawMeters(
         sheet.getCell(FIRST_ROW + ROW_HEIGHT * i, currentCol).value
       );
+      let province;
       try {
-        const province = getProvince({ kp, add });
-        console.log('---', province);
+        province = getProvince({ kp, add });
       } catch (error) {
         if (error instanceof RangeError) {
-          console.log('--- skipped');
           continue;
         }
       }
@@ -73,16 +89,17 @@ const accessSpreadsheet = async () => {
       method = methodCell.userEnteredFormat
         ? getColorMethod(getCellColor(methodCell))
         : method;
-      console.log('----', method);
 
       const progress = computeProgress(
         sheet,
         FIRST_ROW + ROW_HEIGHT * i + 3,
         currentCol
       );
-      console.log('----', progress);
+
+      progressResult[province][method][progress]++;
     }
   }
+  console.log(progressResult);
 };
 
 accessSpreadsheet();
