@@ -1,15 +1,15 @@
 const { GoogleSpreadsheet } = require('google-spreadsheet');
+const cron = require('node-cron');
 
 const creds = require('./config/client_secret');
 const { computeProgress } = require('./utils/progress');
 const { getProvince, sanitizeRawMeters } = require('./utils/province');
 const { convertA1ToCoord, convertCoordToA1 } = require('./utils/cell');
 const { getCellColor, getColorMethod } = require('./utils/method');
-
+const database = require('./database');
 const { PROVINCE } = require('./types/province');
 const { COMPUTED_PROGRESS_STATE } = require('./types/progress');
 const { CONSTRUCTION_METHOD } = require('./types/method');
-const database = require('./database');
 
 const doc = new GoogleSpreadsheet(
   '1locTXx46eaGwOCd1V8xRI84jbaoVUr4YQFnHy6C0ylk'
@@ -49,21 +49,7 @@ const storeProgress = (progressResult) => {
   return;
 };
 
-const accessSpreadsheet = async () => {
-  await doc.useServiceAccountAuth({
-    client_email: creds.client_email,
-    private_key: creds.private_key,
-  });
-
-  await doc.loadInfo();
-  console.log(doc.title);
-  const sheet = await doc.sheetsByIndex[1]; // or use doc.sheetsById[id]
-  console.log(sheet.title);
-
-  const FIRST_CELL_COORD = convertA1ToCoord(FIRST_CELL);
-  const FIRST_ROW = FIRST_CELL_COORD.row;
-  const FIRST_COL = FIRST_CELL_COORD.col;
-
+const createProgressResult = () => {
   const progressResult = {};
   Object.values(PROVINCE).forEach((province) => {
     progressResult[province] = {};
@@ -74,6 +60,23 @@ const accessSpreadsheet = async () => {
       });
     });
   });
+  return progressResult;
+};
+
+const accessSpreadsheet = async () => {
+  await doc.useServiceAccountAuth({
+    client_email: creds.client_email,
+    private_key: creds.private_key,
+  });
+
+  await doc.loadInfo();
+  const sheet = await doc.sheetsByIndex[1]; // or use doc.sheetsById[id]
+
+  const FIRST_CELL_COORD = convertA1ToCoord(FIRST_CELL);
+  const FIRST_ROW = FIRST_CELL_COORD.row;
+  const FIRST_COL = FIRST_CELL_COORD.col;
+
+  const progressResult = createProgressResult();
 
   const pipeCount = 5;
   for (let i = 0; i < pipeCount; i++) {
@@ -127,4 +130,13 @@ const accessSpreadsheet = async () => {
   return;
 };
 
-accessSpreadsheet();
+cron.schedule(
+  '30 12,18 * * *',
+  () => {
+    accessSpreadsheet();
+  },
+  {
+    scheduled: true,
+    timezone: 'Asia/Bangkok',
+  }
+);
