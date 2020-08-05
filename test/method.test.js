@@ -1,11 +1,8 @@
 const { GoogleSpreadsheet } = require('google-spreadsheet');
 
 const creds = require('../config/client_secret');
-const {
-  getCellColor,
-  getColorMethod,
-  CONSTRUCTION_METHOD,
-} = require('../utils/method');
+const { getCellColor, getColorMethod } = require('../utils/method');
+const { CONSTRUCTION_METHOD } = require('../types/method');
 
 describe('describe cell method', () => {
   let doc, sheet;

@@ -1,10 +1,8 @@
 const { GoogleSpreadsheet } = require('google-spreadsheet');
 
 const creds = require('../config/client_secret');
-const {
-  COMPUTED_PROGRESS_STATE,
-  computeProgress,
-} = require('../utils/progress');
+const { computeProgress } = require('../utils/progress');
+const { COMPUTED_PROGRESS_STATE } = require('../types/progress');
 
 describe('pipe progress', () => {
   let doc, sheet;

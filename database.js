@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 require('dotenv').config();
 
+const { ProgressSchema } = require('./models/progress');
+
 mongoose.connect(
   `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@devsandbox.zi8eu.mongodb.net/${process.env.MONGO_DATABASE_NAME}?retryWrites=true&w=majority`,
   { useNewUrlParser: true, useUnifiedTopology: true }
@@ -14,4 +16,6 @@ db.once('open', function () {
   );
 });
 
-module.exports = db;
+module.exports = {
+  Progress: mongoose.model('Progress', ProgressSchema),
+};
