@@ -17,5 +17,5 @@ db.once('open', function () {
 });
 
 module.exports = {
-  Progress: mongoose.Mongoose.model('Progress', ProgressSchema),
+  Progress: mongoose.model('Progress', ProgressSchema),
 };

@@ -9,7 +9,7 @@ const { getCellColor, getColorMethod } = require('./utils/method');
 const { PROVINCE } = require('./types/province');
 const { COMPUTED_PROGRESS_STATE } = require('./types/progress');
 const { CONSTRUCTION_METHOD } = require('./types/method');
-const progress = require('./types/progress');
+const database = require('./database');
 
 const doc = new GoogleSpreadsheet(
   '1locTXx46eaGwOCd1V8xRI84jbaoVUr4YQFnHy6C0ylk'
@@ -18,6 +18,36 @@ const doc = new GoogleSpreadsheet(
 const FIRST_CELL = 'D4';
 const ROW_WIDTH = 81;
 const ROW_HEIGHT = 16;
+
+const storeProgress = (progressResult) => {
+  // province { method { state } }
+  const computedDate = Date.now();
+  Object.values(PROVINCE).forEach((province) => {
+    Object.values(CONSTRUCTION_METHOD).forEach(async (method) => {
+      if (method === CONSTRUCTION_METHOD.UNDECIDED) return;
+      const referenceMethod = progressResult[province][method];
+      const [nonActiveCount, inProgressCount, doneCount] = [
+        referenceMethod[COMPUTED_PROGRESS_STATE.NON_ACTIVE],
+        referenceMethod[COMPUTED_PROGRESS_STATE.IN_PROGRESS],
+        referenceMethod[COMPUTED_PROGRESS_STATE.DONE],
+      ];
+      try {
+        database.Progress.create({
+          computedDate,
+          province,
+          method,
+          nonActiveCount,
+          inProgressCount,
+          doneCount,
+        });
+        console.log(province, method);
+      } catch (error) {
+        console.error.bind(console, error);
+      }
+    });
+  });
+  return;
+};
 
 const accessSpreadsheet = async () => {
   await doc.useServiceAccountAuth({
@@ -45,25 +75,17 @@ const accessSpreadsheet = async () => {
     });
   });
 
-  for (let i = 0; i < 195; i++) {
-    console.log(
-      `${convertCoordToA1({
-        row: FIRST_ROW + ROW_HEIGHT * i,
-        col: FIRST_COL,
-      })}:${convertCoordToA1({
-        row: FIRST_ROW + ROW_HEIGHT * i + ROW_HEIGHT - 1,
-        col: FIRST_COL + ROW_WIDTH - 1,
-      })}`
-    );
-    await sheet.loadCells(
-      `${convertCoordToA1({
-        row: FIRST_ROW + ROW_HEIGHT * i,
-        col: FIRST_COL,
-      })}:${convertCoordToA1({
-        row: FIRST_ROW + ROW_HEIGHT * i + ROW_HEIGHT - 1,
-        col: FIRST_COL + ROW_WIDTH - 1,
-      })}`
-    );
+  const pipeCount = 5;
+  for (let i = 0; i < pipeCount; i++) {
+    const cellLoadingRange = `${convertCoordToA1({
+      row: FIRST_ROW + ROW_HEIGHT * i,
+      col: FIRST_COL,
+    })}:${convertCoordToA1({
+      row: FIRST_ROW + ROW_HEIGHT * i + ROW_HEIGHT - 1,
+      col: FIRST_COL + ROW_WIDTH - 1,
+    })}`;
+    console.log(cellLoadingRange);
+    await sheet.loadCells(cellLoadingRange);
 
     let method;
     for (
@@ -100,6 +122,9 @@ const accessSpreadsheet = async () => {
     }
   }
   console.log(progressResult);
+
+  storeProgress(progressResult);
+  return;
 };
 
 accessSpreadsheet();

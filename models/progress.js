@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const { COMPUTED_PROGRESS_STATE } = require('../types/progress');
+const { CONSTRUCTION_METHOD } = require('../types/method');
 const { PROVINCE } = require('../types/province');
 
 const ProgressSchema = new mongoose.Schema({
@@ -18,7 +18,7 @@ const ProgressSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true,
-    enum: Object.values(COMPUTED_PROGRESS_STATE),
+    enum: Object.values(CONSTRUCTION_METHOD),
   },
   nonActiveCount: {
     type: Number,
