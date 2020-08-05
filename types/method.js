@@ -1,0 +1,10 @@
+const CONSTRUCTION_METHOD = {
+  HDD: 'HDD',
+  BORE: 'BORE',
+  OPEN_CUT: 'OPEN CUT',
+  UNDECIDED: 'UNDECIDED',
+};
+
+module.exports = {
+  CONSTRUCTION_METHOD,
+};

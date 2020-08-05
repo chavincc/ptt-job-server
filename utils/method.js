@@ -1,3 +1,5 @@
+const { CONSTRUCTION_METHOD } = require('../types/method');
+
 const getCellColor = (cell) => {
   if (cell.userEnteredFormat.backgroundColor) {
     const { red, green, blue } = cell.userEnteredFormat.backgroundColor;
@@ -19,12 +21,6 @@ const rgbToHex = (rgb) => {
   return hex;
 };
 
-const CONSTRUCTION_METHOD = {
-  HDD: 'HDD',
-  BORE: 'BORE',
-  OPEN_CUT: 'OPEN CUT',
-  UNDECIDED: 'UNDECIDED',
-};
 const getColorMethod = (color = '') => {
   const colorMapper = {
     '00b0f0': CONSTRUCTION_METHOD.HDD,
