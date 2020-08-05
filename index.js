@@ -1,15 +1,15 @@
 const { GoogleSpreadsheet } = require('google-spreadsheet');
+const cron = require('node-cron');
 
 const creds = require('./config/client_secret');
 const { computeProgress } = require('./utils/progress');
 const { getProvince, sanitizeRawMeters } = require('./utils/province');
 const { convertA1ToCoord, convertCoordToA1 } = require('./utils/cell');
 const { getCellColor, getColorMethod } = require('./utils/method');
-
+const database = require('./database');
 const { PROVINCE } = require('./types/province');
 const { COMPUTED_PROGRESS_STATE } = require('./types/progress');
 const { CONSTRUCTION_METHOD } = require('./types/method');
-const database = require('./database');
 
 const doc = new GoogleSpreadsheet(
   '1locTXx46eaGwOCd1V8xRI84jbaoVUr4YQFnHy6C0ylk'
@@ -50,6 +50,7 @@ const storeProgress = (progressResult) => {
 };
 
 const accessSpreadsheet = async () => {
+  console.log('spreadsheet job');
   await doc.useServiceAccountAuth({
     client_email: creds.client_email,
     private_key: creds.private_key,
@@ -127,4 +128,13 @@ const accessSpreadsheet = async () => {
   return;
 };
 
-accessSpreadsheet();
+cron.schedule(
+  '30 12,18 * * *',
+  () => {
+    accessSpreadsheet();
+  },
+  {
+    scheduled: true,
+    timezone: 'Asia/Bangkok',
+  }
+);
