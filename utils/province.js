@@ -51,7 +51,7 @@ const getProvince = (location = { kp: 0, add: 0 }) => {
 
 const sanitizeRawMeters = (meter = 0) => {
   const roundedMeter = Math.round(meter);
-  const kp = Math.round(roundedMeter / 1000);
+  const kp = Math.floor(roundedMeter / 1000);
   const add = roundedMeter % 1000;
   return {
     kp,
