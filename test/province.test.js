@@ -106,9 +106,10 @@ describe('get province from given location', () => {
 
 describe('sanitize raw meter into km and m', () => {
   it('convert meters into km and meter', () => {
-    expect(sanitizeRawMeters(145500)).toBe({ kp: 145, add: 500 });
-    expect(sanitizeRawMeters(145988)).toBe({ kp: 145, add: 988 });
-    expect(sanitizeRawMeters(146000)).toBe({ kp: 146, add: 0 });
-    expect(sanitizeRawMeters(146012)).toBe({ kp: 146, add: 12 });
+    expect(sanitizeRawMeters(145494)).toStrictEqual({ kp: 145, add: 494 });
+    expect(sanitizeRawMeters(145506)).toStrictEqual({ kp: 145, add: 506 });
+    expect(sanitizeRawMeters(145988)).toStrictEqual({ kp: 145, add: 988 });
+    expect(sanitizeRawMeters(146000)).toStrictEqual({ kp: 146, add: 0 });
+    expect(sanitizeRawMeters(146012)).toStrictEqual({ kp: 146, add: 12 });
   });
 });
