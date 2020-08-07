@@ -1,4 +1,8 @@
-const { compareLocation, getProvince } = require('../utils/province');
+const {
+  compareLocation,
+  getProvince,
+  sanitizeRawMeters,
+} = require('../utils/province');
 const { PROVINCE } = require('../types/province');
 
 describe('province location comparison', () => {
@@ -97,5 +101,14 @@ describe('get province from given location', () => {
     } catch (error) {
       expect(error).toBeInstanceOf(RangeError);
     }
+  });
+});
+
+describe('sanitize raw meter into km and m', () => {
+  it('convert meters into km and meter', () => {
+    expect(sanitizeRawMeters(145500)).toBe({ kp: 145, add: 500 });
+    expect(sanitizeRawMeters(145988)).toBe({ kp: 145, add: 988 });
+    expect(sanitizeRawMeters(146000)).toBe({ kp: 146, add: 0 });
+    expect(sanitizeRawMeters(146012)).toBe({ kp: 146, add: 12 });
   });
 });
